@@ -1,6 +1,7 @@
 # Celebrity-Face-Recognition
 Celebrity Face Recognition Using Classical Machine Learning
-th untitled.ipynb file has all the technics that i've applied on the images such as 
+
+The untitled.ipynb file has all the technics that i've applied on the images such as 
 
 Face detection using OpenCV's Haar Cascade
 
