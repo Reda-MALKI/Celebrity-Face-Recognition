@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Celebrity Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #1c92d2, #f2fcfe);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    /* Custom file input styles */
+    .custom-file-upload {
+      display: inline-block;
+      padding: 12px 20px;
+      cursor: pointer;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+    }
+
+    .custom-file-upload:hover {
+      background: linear-gradient(to right, #5a0eb3, #1a60e6);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    img {
+      max-width: 250px;
+      margin-top: 20px;
+      border-radius: 12px;
+      display: none;
+      animation: slideIn 0.5s ease-in-out;
+    }
+
+    button {
+      background: #1c92d2;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #1375b3;
+    }
+
+    .result {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes slideIn {
+      from {transform: translateY(20px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Celebrity Face Recognition</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label for="file-upload" class="custom-file-upload">Choose a Celebrity Image</label>
+      <input id="file-upload" type="file" name="image" accept="image/*" onchange="previewImage(event)" required />
+      <br />
+      <img id="preview" alt="Image Preview" />
+      <br />
+      <button type="submit">Predict</button>
+    </form>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const output = document.getElementById('preview');
+        output.src = reader.result;
+        output.style.display = 'block';
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+
+    // Handle form submission without page reload
+    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch("/predict", {
+        method: "POST",
+        body: formData,
+      })
+      .then((response) => response.text())
+      .then((data) => {
+        document.getElementById("result").innerText = "Predicted Celebrity: " + data;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        document.getElementById("result").innerText = "Error predicting celebrity.";
+      });
+    });
+  </script>
+</body>
+</html>
